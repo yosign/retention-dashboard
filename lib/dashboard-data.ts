@@ -5,31 +5,38 @@ import type {
   RetentionData,
 } from "@/src/types/dashboard";
 
+const CHART_COLORS = {
+  overall: "hsl(var(--foreground))",
+  monthly: "hsl(var(--chart-1))",
+  yearly: "hsl(var(--chart-2))",
+  quarterly: "hsl(var(--chart-3))",
+};
+
 export const retentionChartConfig: ChartSeriesConfig[] = [
-  { key: "overall", label: "整体", color: "var(--foreground)" },
-  { key: "monthly", label: "月付", color: "var(--chart-1)" },
-  { key: "yearly", label: "年付", color: "var(--chart-2)" },
-  { key: "quarterly", label: "季付", color: "var(--chart-3)" },
+  { key: "overall", label: "整体", color: CHART_COLORS.overall },
+  { key: "monthly", label: "月付", color: CHART_COLORS.monthly },
+  { key: "yearly", label: "年付", color: CHART_COLORS.yearly },
+  { key: "quarterly", label: "季付", color: CHART_COLORS.quarterly },
 ];
 
 export const paybackChartConfig: ChartSeriesConfig[] = [
-  { key: "cumulativeLtv", label: "累计 LTV", color: "var(--foreground)" },
-  { key: "retentionRate", label: "续订留存率", color: "var(--chart-1)" },
+  { key: "cumulativeLtv", label: "累计 LTV", color: "hsl(var(--foreground))" },
+  { key: "retentionRate", label: "续订留存率", color: "hsl(var(--chart-4))" },
 ];
 
 export const forecastRevenueChartConfig: ChartSeriesConfig[] = [
-  { key: "actualRevenue", label: "实际 MRR", color: "var(--chart-3)" },
-  { key: "forecastRevenue", label: "预测 MRR", color: "var(--chart-6)" },
+  { key: "actualRevenue", label: "实际", color: "hsl(var(--chart-1))" },
+  { key: "forecastRevenue", label: "预测", color: "hsl(var(--chart-6))" },
 ];
 
 export const forecastSubscriberChartConfig: ChartSeriesConfig[] = [
-  { key: "actualSubscribers", label: "实际订阅数", color: "var(--chart-7)" },
-  { key: "forecastSubscribers", label: "预测订阅数", color: "var(--chart-1)" },
+  { key: "actualSubscribers", label: "实际", color: "hsl(var(--chart-2))" },
+  { key: "forecastSubscribers", label: "预测", color: "hsl(var(--chart-7))" },
 ];
 
-export const chartAxisColor = "var(--muted-foreground)";
-export const chartGridColor = "color-mix(in oklab, var(--border) 85%, transparent)";
-export const chartCursorColor = "color-mix(in oklab, var(--border) 90%, transparent)";
+export const chartAxisColor = "hsl(var(--muted-foreground))";
+export const chartGridColor = "color-mix(in srgb, hsl(var(--border)) 85%, transparent)";
+export const chartCursorColor = "color-mix(in srgb, hsl(var(--border)) 90%, transparent)";
 
 export const defaultRetentionData: RetentionData = {
   summaryMetrics: [
@@ -41,13 +48,13 @@ export const defaultRetentionData: RetentionData = {
     {
       label: "P2 续订率",
       value: "72%",
-      hint: "留存的第一关键节点，影响年度续费预期",
+      hint: "留存的第一关键节点，影响着整体续费预期",
       tone: "highlight",
     },
     {
       label: "P3 续订率",
       value: "51.8%",
-      hint: "试了第二次续订之后，用户留存开始明显分化",
+      hint: "过了第二次续订之后，用户留存开始明显分化",
     },
     {
       label: "被动流失",
@@ -166,7 +173,7 @@ export const defaultForecastData: ForecastData = {
       value: "$521,858.00",
       hint: "基于趋势外推",
       badge: "-1.5%",
-      badgeTone: "positive",
+      badgeTone: "negative",
     },
     {
       label: "预测下季度",
@@ -239,7 +246,7 @@ export const defaultForecastData: ForecastData = {
     {
       label: "偏差",
       value: "-40.4%",
-      hint: "两种预测方法的差距",
+      hint: "两种预测方法的差异",
     },
   ],
 };

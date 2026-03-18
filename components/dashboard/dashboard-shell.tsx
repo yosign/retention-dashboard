@@ -15,18 +15,18 @@ export function DashboardShell({
 }: DashboardShellProps) {
   return (
     <div className="dashboard-shell space-y-6">
-      <header className="dashboard-panel overflow-hidden px-6 py-5 sm:px-8">
+      <header className="space-y-2 px-1 py-2">
         <div className="space-y-2">
           {eyebrow ? (
-            <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
+            <p className="text-xs font-medium uppercase tracking-[0.2em] text-muted-foreground">
               {eyebrow}
             </p>
           ) : null}
-          <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+          <h1 className="text-4xl font-semibold tracking-tight text-foreground">
             {title}
           </h1>
           {description ? (
-            <p className="max-w-3xl text-sm text-muted-foreground sm:text-base">
+            <p className="max-w-3xl text-sm text-muted-foreground">
               {description}
             </p>
           ) : null}

@@ -16,9 +16,9 @@ export function MetricCard({
   return (
     <article
       className={cn(
-        "dashboard-panel rounded-[24px] border border-border px-5 py-4 sm:px-6",
+        "rounded-xl border border-border bg-card px-5 py-4 shadow-none",
         highlight &&
-          "border-foreground bg-foreground text-background shadow-[0_28px_70px_-42px_color-mix(in_oklab,hsl(var(--foreground))_90%,transparent)]",
+          "bg-foreground text-background",
       )}
     >
       <div className="space-y-2">

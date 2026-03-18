@@ -1,27 +1,20 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import {
   Area,
   CartesianGrid,
   ComposedChart,
   Legend,
   Line,
-  ReferenceLine,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
-import {
-  BarChart3,
-  DollarSign,
-  TrendingDown,
-  TrendingUp,
-} from "lucide-react";
+import { BarChart3, DollarSign, TrendingDown, TrendingUp } from "lucide-react";
 import { DashboardShell } from "@/components/dashboard/dashboard-shell";
-import { MetricCard } from "@/components/dashboard/metric-card";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   chartAxisColor,
@@ -31,7 +24,6 @@ import {
   forecastRevenueChartConfig,
   forecastSubscriberChartConfig,
 } from "@/lib/dashboard-data";
-import { cn } from "@/lib/utils";
 import type {
   ForecastChartPoint,
   ForecastPageProps,
@@ -62,27 +54,21 @@ function ForecastTooltip({
   }
 
   const visibleItems = payload.filter((item) => typeof item.value === "number");
-
   if (!visibleItems.length) {
     return null;
   }
 
   return (
-    <div className="rounded-2xl border border-border bg-popover/95 p-4 shadow-xl backdrop-blur">
-      <div className="mb-3 text-sm font-semibold text-popover-foreground">{label}</div>
-      <div className="space-y-2 text-sm">
+    <div className="rounded-xl border border-border bg-popover p-4 text-sm shadow-none">
+      <div className="mb-3 font-medium text-popover-foreground">{label}</div>
+      <div className="space-y-2">
         {visibleItems.map((item) => (
-          <div
-            key={item.name}
-            className="flex min-w-44 items-center justify-between gap-6"
-          >
+          <div key={item.name} className="flex items-center justify-between gap-6">
             <div className="flex items-center gap-2 text-muted-foreground">
               <span className="size-2 rounded-full" style={{ backgroundColor: item.color }} />
               <span>{item.name}</span>
             </div>
-            <div className="font-medium text-foreground">
-              {valueFormatter(Number(item.value))}
-            </div>
+            <div className="font-medium text-foreground">{valueFormatter(Number(item.value))}</div>
           </div>
         ))}
       </div>
@@ -90,25 +76,16 @@ function ForecastTooltip({
   );
 }
 
-function renderLegend(
-  value: ReadonlyArray<{ color?: string; value?: string }> | undefined,
-  dottedKeys: string[],
-) {
+function renderLegend(value: ReadonlyArray<{ color?: string; value?: string }> | undefined) {
   if (!value?.length) {
     return null;
   }
 
   return (
-    <div className="mt-4 flex flex-wrap items-center justify-center gap-4 text-xs font-medium text-muted-foreground">
+    <div className="mt-4 flex items-center justify-center gap-4 text-xs text-muted-foreground">
       {value.map((item) => (
         <div key={item.value} className="flex items-center gap-2">
-          <span
-            className={cn(
-              "inline-block size-2 rounded-full",
-              item.value && dottedKeys.includes(item.value) && "opacity-90",
-            )}
-            style={{ backgroundColor: item.color }}
-          />
+          <span className="size-2 rounded-full" style={{ backgroundColor: item.color }} />
           <span>{item.value}</span>
         </div>
       ))}
@@ -138,6 +115,7 @@ function ForecastChartCard({
   yDomain,
   yTicks,
   valueFormatter,
+  isMounted,
 }: {
   title: string;
   data: ForecastChartPoint[];
@@ -147,88 +125,98 @@ function ForecastChartCard({
   yDomain: [number, number];
   yTicks: number[];
   valueFormatter: (value: number) => string;
+  isMounted: boolean;
 }) {
   return (
-    <Card className="dashboard-panel overflow-hidden">
-      <CardHeader className="pb-0">
-        <CardTitle className="text-xl font-semibold">{title}</CardTitle>
+    <Card className="rounded-2xl border border-border bg-card shadow-none">
+      <CardHeader className="p-5 pb-0">
+        <CardTitle className="text-base font-semibold">{title}</CardTitle>
       </CardHeader>
-      <CardContent className="p-4 pt-3 sm:p-6">
-        <div className="h-[340px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <ComposedChart data={data} margin={{ top: 16, right: 12, left: -8, bottom: 12 }}>
-              <defs>
-                <linearGradient id={`${actualKey}-fill`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor={config[0].color} stopOpacity={0.28} />
-                  <stop offset="100%" stopColor={config[0].color} stopOpacity={0.02} />
-                </linearGradient>
-              </defs>
-              <CartesianGrid strokeDasharray="4 8" stroke={chartGridColor} vertical={false} />
-              <XAxis
-                dataKey="month"
-                tickLine={false}
-                axisLine={false}
-                tick={{ fill: chartAxisColor, fontSize: 11 }}
-              />
-              <YAxis
-                tickLine={false}
-                axisLine={false}
-                width={58}
-                domain={yDomain}
-                ticks={yTicks}
-                tickFormatter={valueFormatter}
-                tick={{ fill: chartAxisColor, fontSize: 11 }}
-              />
-              <Tooltip
-                cursor={{ stroke: chartCursorColor, strokeDasharray: "4 6" }}
-                content={<ForecastTooltip valueFormatter={valueFormatter} />}
-              />
-              <Legend
-                verticalAlign="bottom"
-                align="center"
-                iconType="circle"
-                content={(props) => renderLegend(props.payload, [config[1].label])}
-              />
-              <ReferenceLine
-                x="12月"
-                stroke="color-mix(in oklab, hsl(var(--foreground)) 16%, transparent)"
-                strokeDasharray="4 6"
-              />
-              <Area
-                type="monotone"
-                dataKey={actualKey}
-                name={config[0].label}
-                stroke="none"
-                fill={`url(#${actualKey}-fill)`}
-                legendType="none"
-                isAnimationActive={false}
-                connectNulls={false}
-              />
-              <Line
-                type="monotone"
-                dataKey={actualKey}
-                name={config[0].label}
-                stroke={config[0].color}
-                strokeWidth={2.5}
-                dot={false}
-                activeDot={{ r: 5 }}
-                isAnimationActive={false}
-                connectNulls={false}
-              />
-              <Line
-                type="monotone"
-                dataKey={forecastKey}
-                name={config[1].label}
-                stroke={config[1].color}
-                strokeWidth={2.2}
-                strokeDasharray="4 6"
-                dot={false}
-                activeDot={{ r: 5 }}
-                isAnimationActive={false}
-                connectNulls
-              />
-            </ComposedChart>
-          </ResponsiveContainer>
+      <CardContent className="p-5 pt-3">
+        <div className="h-[340px]">
+          {isMounted ? (
+            <ResponsiveContainer width="100%" height="100%">
+              <ComposedChart data={data} margin={{ top: 10, right: 10, left: -14, bottom: 12 }}>
+                <defs>
+                  <linearGradient id={`${actualKey}-fill`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={config[0].color} stopOpacity={0.14} />
+                    <stop offset="100%" stopColor={config[0].color} stopOpacity={0.02} />
+                  </linearGradient>
+                  <linearGradient id={`${forecastKey}-fill`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={config[1].color} stopOpacity={0.12} />
+                    <stop offset="100%" stopColor={config[1].color} stopOpacity={0.02} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid stroke={chartGridColor} vertical={false} />
+                <XAxis
+                  dataKey="month"
+                  tickLine={false}
+                  axisLine={false}
+                  tick={{ fill: chartAxisColor, fontSize: 11 }}
+                />
+                <YAxis
+                  tickLine={false}
+                  axisLine={false}
+                  width={58}
+                  domain={yDomain}
+                  ticks={yTicks}
+                  tickFormatter={valueFormatter}
+                  tick={{ fill: chartAxisColor, fontSize: 11 }}
+                />
+                <Tooltip
+                  cursor={{ stroke: chartCursorColor, strokeDasharray: "4 6" }}
+                  content={<ForecastTooltip valueFormatter={valueFormatter} />}
+                />
+                <Legend
+                  verticalAlign="bottom"
+                  align="center"
+                  iconType="circle"
+                  content={(props) => renderLegend(props.payload)}
+                />
+                <Area
+                  type="monotone"
+                  dataKey={actualKey}
+                  name={config[0].label}
+                  stroke="none"
+                  fill={`url(#${actualKey}-fill)`}
+                  legendType="none"
+                  isAnimationActive={false}
+                />
+                <Area
+                  type="monotone"
+                  dataKey={forecastKey}
+                  name={config[1].label}
+                  stroke="none"
+                  fill={`url(#${forecastKey}-fill)`}
+                  legendType="none"
+                  isAnimationActive={false}
+                  connectNulls
+                />
+                <Line
+                  type="monotone"
+                  dataKey={actualKey}
+                  name={config[0].label}
+                  stroke={config[0].color}
+                  strokeWidth={2}
+                  dot={false}
+                  activeDot={{ r: 4 }}
+                  isAnimationActive={false}
+                />
+                <Line
+                  type="monotone"
+                  dataKey={forecastKey}
+                  name={config[1].label}
+                  stroke={config[1].color}
+                  strokeWidth={2}
+                  strokeDasharray="5 5"
+                  dot={false}
+                  activeDot={{ r: 4 }}
+                  isAnimationActive={false}
+                  connectNulls
+                />
+              </ComposedChart>
+            </ResponsiveContainer>
+          ) : null}
         </div>
       </CardContent>
     </Card>
@@ -237,40 +225,32 @@ function ForecastChartCard({
 
 export function ForecastDashboard({ data }: ForecastPageProps) {
   const dashboardData = data ?? defaultForecastData;
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   return (
     <DashboardShell
-      eyebrow="收入与订阅预测"
       title="收入预测"
-      description="基于趋势和同期群数据预测未来收入与订阅数变化"
+      description="基于留存曲线和近期收入变化，对未来收入与订阅规模进行预测。"
     >
-      <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
-        {dashboardData.summaryMetrics.map((metric) => (
-          <div key={metric.label} className="relative">
-            <MetricCard label={metric.label} value={metric.value} hint={metric.hint} />
-            {metric.badge ? (
-              <Badge
-                className={cn(
-                  "absolute right-5 top-5 rounded-full border border-transparent px-2.5 py-1 text-xs font-medium shadow-none",
-                  metric.badgeTone === "positive"
-                    ? "text-foreground"
-                    : "bg-muted text-muted-foreground",
-                )}
-                style={
-                  metric.badgeTone === "positive"
-                    ? {
-                        backgroundColor:
-                          "color-mix(in oklab, var(--chart-1) 18%, var(--card))",
-                        color: "var(--chart-7)",
-                      }
-                    : undefined
-                }
-              >
-                {metric.badge}
-              </Badge>
-            ) : null}
-          </div>
-        ))}
+      <section className="rounded-2xl border border-border bg-card shadow-none">
+        <div className="grid gap-0 divide-y divide-border md:grid-cols-4 md:divide-x md:divide-y-0">
+          {dashboardData.summaryMetrics.map((metric) => (
+            <div key={metric.label} className="space-y-2 p-5">
+              <div className="text-sm text-muted-foreground">{metric.label}</div>
+              <div className="flex items-center gap-3">
+                <div className="text-3xl font-semibold tracking-tight">{metric.value}</div>
+                {metric.badge ? (
+                  <span className="text-sm font-medium text-destructive">{metric.badge}</span>
+                ) : null}
+              </div>
+              <div className="text-sm text-muted-foreground">{metric.hint}</div>
+            </div>
+          ))}
+        </div>
       </section>
 
       <ForecastChartCard
@@ -282,6 +262,7 @@ export function ForecastDashboard({ data }: ForecastPageProps) {
         yDomain={[385, 605]}
         yTicks={[385, 440, 495, 550, 605]}
         valueFormatter={formatUsdThousands}
+        isMounted={isMounted}
       />
 
       <ForecastChartCard
@@ -293,50 +274,41 @@ export function ForecastDashboard({ data }: ForecastPageProps) {
         yDomain={[6, 12]}
         yTicks={[6, 7.5, 9, 10.5, 12]}
         valueFormatter={formatSubscribersThousands}
+        isMounted={isMounted}
       />
 
-      <Card className="dashboard-panel overflow-hidden">
-        <CardHeader className="pb-3">
-          <CardTitle className="text-xl font-semibold">交叉验证</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6 p-4 pt-2 sm:p-6">
-          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-            {dashboardData.validationLinks.map((item) => {
-              const Icon = getValidationIcon(item.icon);
+      <Card className="rounded-2xl border border-border bg-card shadow-none">
+        <CardContent className="space-y-5 p-5">
+          <div className="flex flex-col gap-4 border border-border rounded-xl p-4">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div className="text-base font-semibold">交叉验证</div>
+              <div className="flex flex-wrap items-center gap-6">
+                {dashboardData.validationLinks.map((item) => {
+                  const Icon = getValidationIcon(item.icon);
 
-              return (
-                <Link key={item.title} href={item.href}>
-                  <Card className="h-full rounded-[24px] border border-border bg-card transition-colors hover:bg-accent/40">
-                    <CardContent className="space-y-4 p-5">
-                      <div className="flex size-10 items-center justify-center rounded-2xl bg-muted text-foreground">
-                        <Icon className="size-5" />
-                      </div>
-                      <div className="space-y-1.5">
-                        <div className="text-base font-semibold">{item.title}</div>
-                        <div className="text-sm leading-6 text-muted-foreground">
-                          {item.description}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
-              );
-            })}
-          </div>
+                  return (
+                    <Link
+                      key={item.title}
+                      href={item.href}
+                      className="flex items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                    >
+                      <Icon className="size-4" />
+                      <span>{item.title}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
 
-          <div className="grid gap-4 md:grid-cols-3">
-            {dashboardData.validationMetrics.map((metric) => (
-              <Card
-                key={metric.label}
-                className="rounded-[24px] border border-border bg-card shadow-none"
-              >
-                <CardContent className="space-y-3 p-5">
+            <div className="grid gap-4 md:grid-cols-3">
+              {dashboardData.validationMetrics.map((metric) => (
+                <div key={metric.label} className="rounded-xl border border-border bg-background p-5">
                   <div className="text-sm text-muted-foreground">{metric.label}</div>
-                  <div className="text-3xl font-semibold tracking-tight">{metric.value}</div>
-                  <div className="text-sm text-muted-foreground">{metric.hint}</div>
-                </CardContent>
-              </Card>
-            ))}
+                  <div className="mt-2 text-3xl font-semibold tracking-tight">{metric.value}</div>
+                  <div className="mt-2 text-sm text-muted-foreground">{metric.hint}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </CardContent>
       </Card>

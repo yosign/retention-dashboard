@@ -14,25 +14,24 @@ export default function Home({
   return (
     <main className="min-h-screen bg-background">
       <Tabs defaultValue={tab} className="w-full">
-        {/* Tab 导航栏 */}
-        <div className="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <div className="border-b border-border">
           <div className="mx-auto max-w-screen-2xl px-6">
-            <TabsList className="h-12 bg-transparent p-0 gap-0">
+            <TabsList className="h-12 rounded-none border-b border-border bg-transparent p-0">
               <TabsTrigger
                 value="retention"
-                className="relative h-12 rounded-none border-b-2 border-transparent px-4 pb-0 pt-0 font-medium text-muted-foreground data-[state=active]:border-foreground data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+                className="h-12 rounded-none border-b-2 border-transparent bg-transparent px-6 font-medium text-muted-foreground shadow-none data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
               >
                 留存分析
               </TabsTrigger>
               <TabsTrigger
                 value="payback"
-                className="relative h-12 rounded-none border-b-2 border-transparent px-4 pb-0 pt-0 font-medium text-muted-foreground data-[state=active]:border-foreground data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+                className="h-12 rounded-none border-b-2 border-transparent bg-transparent px-6 font-medium text-muted-foreground shadow-none data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
               >
                 回本分析
               </TabsTrigger>
               <TabsTrigger
                 value="forecast"
-                className="relative h-12 rounded-none border-b-2 border-transparent px-4 pb-0 pt-0 font-medium text-muted-foreground data-[state=active]:border-foreground data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+                className="h-12 rounded-none border-b-2 border-transparent bg-transparent px-6 font-medium text-muted-foreground shadow-none data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
               >
                 收入预测
               </TabsTrigger>
@@ -40,7 +39,6 @@ export default function Home({
           </div>
         </div>
 
-        {/* Tab 内容 */}
         <TabsContent value="retention" className="mt-0">
           <RetentionDashboard data={defaultRetentionData} />
         </TabsContent>
