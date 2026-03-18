@@ -13,7 +13,7 @@ const baseUrl = process.env.SCREENSHOT_BASE_URL ?? "http://localhost:3000";
     waitUntil: "networkidle",
     timeout: 20000,
   });
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(4000);
   await page.screenshot({ path: "retention-v5.png", fullPage: true });
   console.log("retention done");
 
@@ -21,7 +21,7 @@ const baseUrl = process.env.SCREENSHOT_BASE_URL ?? "http://localhost:3000";
     waitUntil: "networkidle",
     timeout: 20000,
   });
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(4000);
   await page.screenshot({ path: "payback-v5.png", fullPage: true });
   console.log("payback done");
 
@@ -29,7 +29,7 @@ const baseUrl = process.env.SCREENSHOT_BASE_URL ?? "http://localhost:3000";
     waitUntil: "networkidle",
     timeout: 20000,
   });
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(4000);
   await page.screenshot({ path: "forecast-v2.png", fullPage: true });
   console.log("forecast done");
 

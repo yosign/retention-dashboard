@@ -16,33 +16,28 @@ export function MetricCard({
   return (
     <article
       className={cn(
-        "rounded-2xl border border-border px-5 py-4 shadow-none",
-        highlight ? "bg-foreground text-background border-foreground" : "bg-card",
+        "rounded-2xl border px-5 py-4 shadow-none",
+        highlight ? "border-transparent" : "border-border bg-card",
       )}
+      style={highlight ? { backgroundColor: "#1a1714", color: "#f5f0ea" } : undefined}
     >
       <div className="space-y-2">
         <p
-          className={cn(
-            "text-sm text-muted-foreground",
-            highlight && "text-background/70",
-          )}
+          className="text-sm"
+          style={highlight ? { color: "rgba(245,240,234,0.65)" } : { color: "hsl(var(--muted-foreground))" }}
         >
           {label}
         </p>
         <p
-          className={cn(
-            "text-3xl font-semibold tracking-tight text-foreground",
-            highlight && "text-background",
-          )}
+          className="text-3xl font-semibold tracking-tight"
+          style={highlight ? { color: "#f5f0ea" } : { color: "hsl(var(--foreground))" }}
         >
           {value}
         </p>
         {hint ? (
           <p
-            className={cn(
-              "text-sm text-muted-foreground",
-              highlight && "text-background/60",
-            )}
+            className="text-sm"
+            style={highlight ? { color: "rgba(245,240,234,0.55)" } : { color: "hsl(var(--muted-foreground))" }}
           >
             {hint}
           </p>
