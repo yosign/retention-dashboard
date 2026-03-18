@@ -177,7 +177,7 @@ export function RetentionDashboard({
       </section>
 
       <Card className="rounded-2xl border border-border bg-card shadow-none">
-        <CardHeader className="space-y-5 p-5 pb-0">
+        <CardHeader className="space-y-4 p-5 pb-0">
           <div className="flex items-center justify-between">
             <CardTitle className="text-base font-semibold">续订阶段曲线</CardTitle>
             <div className="flex gap-1">
@@ -186,7 +186,7 @@ export function RetentionDashboard({
                   key={tab.value}
                   onClick={() => setActiveTab(tab.value)}
                   className={cn(
-                    "px-3 py-1 text-sm rounded-lg transition-colors outline-none",
+                    "rounded-lg px-3 py-1 text-sm transition-colors",
                     activeTab === tab.value
                       ? "text-foreground font-semibold"
                       : "text-muted-foreground hover:text-foreground"
