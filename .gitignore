@@ -41,3 +41,4 @@ node_modules/
 pnpm-lock.yaml
 LONG_TASK.md
 TASK.md
+.vercel
