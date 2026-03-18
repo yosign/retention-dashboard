@@ -16,9 +16,8 @@ export function MetricCard({
   return (
     <article
       className={cn(
-        "rounded-xl border border-border bg-card px-5 py-4 shadow-none",
-        highlight &&
-          "bg-foreground text-background",
+        "rounded-2xl border border-border px-5 py-4 shadow-none",
+        highlight ? "bg-foreground text-background border-foreground" : "bg-card",
       )}
     >
       <div className="space-y-2">

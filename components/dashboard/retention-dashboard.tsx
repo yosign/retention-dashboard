@@ -15,13 +15,7 @@ import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import {
   Table,
@@ -170,7 +164,7 @@ export function RetentionDashboard({
 
   return (
     <DashboardShell eyebrow="收入与留存分析" title="留存分析">
-      <section className="grid grid-cols-1 gap-4 xl:grid-cols-4">
+      <section className="grid grid-cols-4 gap-4">
         {dashboardData.summaryMetrics.map((metric) => (
           <MetricCard
             key={metric.label}
@@ -186,25 +180,27 @@ export function RetentionDashboard({
         <CardHeader className="space-y-5 p-5 pb-0">
           <CardTitle className="text-base font-semibold">续订阶段曲线</CardTitle>
           <div className="flex flex-wrap items-center gap-2">
-            <Select
+            <ToggleGroup
+              type="single"
               value={range}
               onValueChange={(value) => {
+                if (!value) return;
                 setRange(value);
                 onPeriodChange?.(value);
                 pushFilter(value, subscriptionCycle, displayMode, includeTrial);
               }}
+              className="gap-1"
             >
-              <SelectTrigger className="h-10 w-[132px] rounded-xl border-border bg-background text-sm">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {dashboardData.periodOptions.map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              {dashboardData.periodOptions.map((option) => (
+                <ToggleGroupItem
+                  key={option.value}
+                  value={option.value}
+                  className="h-10 rounded-xl border border-border px-3 text-sm data-[state=on]:bg-foreground data-[state=on]:text-background"
+                >
+                  {option.label}
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
 
             <Select
               value={subscriptionCycle}
@@ -289,12 +285,12 @@ export function RetentionDashboard({
         <CardContent className="space-y-5 p-5">
           <div className="rounded-2xl border border-border bg-background p-5">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="gap-4">
-              <TabsList className="h-10 rounded-none border-b border-border bg-transparent p-0">
+              <TabsList variant="line" className="h-10 w-full border-b border-border">
                 {dashboardData.viewTabs.map((tab) => (
                   <TabsTrigger
                     key={tab.value}
                     value={tab.value}
-                    className="h-10 rounded-none border-b-2 border-transparent bg-transparent px-4 text-sm font-medium text-muted-foreground shadow-none data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                    className="h-10 px-4 text-sm font-medium"
                   >
                     {tab.label}
                   </TabsTrigger>

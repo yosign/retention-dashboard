@@ -14,7 +14,7 @@ const baseUrl = process.env.SCREENSHOT_BASE_URL ?? "http://localhost:3000";
     timeout: 20000,
   });
   await page.waitForTimeout(2000);
-  await page.screenshot({ path: "retention-v4.png", fullPage: true });
+  await page.screenshot({ path: "retention-v5.png", fullPage: true });
   console.log("retention done");
 
   await page.goto(`${baseUrl}/payback`, {
@@ -22,7 +22,7 @@ const baseUrl = process.env.SCREENSHOT_BASE_URL ?? "http://localhost:3000";
     timeout: 20000,
   });
   await page.waitForTimeout(2000);
-  await page.screenshot({ path: "payback-v4.png", fullPage: true });
+  await page.screenshot({ path: "payback-v5.png", fullPage: true });
   console.log("payback done");
 
   await page.goto(`${baseUrl}/forecast`, {

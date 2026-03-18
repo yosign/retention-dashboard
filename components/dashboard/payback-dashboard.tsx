@@ -57,6 +57,12 @@ function formatPercent(value: number) {
   return `${value.toFixed(value % 1 === 0 ? 0 : 1)}%`;
 }
 
+function getHeatmapStrength(value: number, display: MatrixDisplay) {
+  const normalizedValue = display === "relative" ? value / 100 : value / 460;
+  // 渐变范围：5%（极淡）到 60%（深色），与参考图热力图层次匹配
+  return Math.max(5, Math.min(60, Math.round(normalizedValue * 60)));
+}
+
 function buildPaybackFilter(
   paybackView: PaybackView,
   matrixMetric: string,
@@ -98,20 +104,6 @@ function PaybackTooltip({
       </div>
     </div>
   );
-}
-
-function getMatrixCellClass(value: number, display: MatrixDisplay) {
-  if (display === "relative") {
-    if (value >= 80) return "bg-foreground text-background";
-    if (value >= 60) return "bg-foreground/85 text-background";
-    if (value >= 40) return "bg-foreground/70 text-background";
-    return "bg-muted text-muted-foreground";
-  }
-
-  if (value >= 420) return "bg-foreground text-background";
-  if (value >= 340) return "bg-foreground/85 text-background";
-  if (value >= 240) return "bg-foreground/70 text-background";
-  return "bg-muted text-muted-foreground";
 }
 
 export function PaybackDashboard({
@@ -355,13 +347,13 @@ export function PaybackDashboard({
                   value="absolute"
                   className="rounded-xl px-3 text-sm data-[state=on]:bg-foreground data-[state=on]:text-background"
                 >
-                  绝对
+                  #绝对
                 </ToggleGroupItem>
                 <ToggleGroupItem
                   value="relative"
                   className="rounded-xl px-3 text-sm data-[state=on]:bg-foreground data-[state=on]:text-background"
                 >
-                  相对
+                  %相对
                 </ToggleGroupItem>
               </ToggleGroup>
 
@@ -434,10 +426,14 @@ export function PaybackDashboard({
                     {row.values.map((value, index) => (
                       <TableCell key={`${row.cohort}-${index}`} className="p-2">
                         <div
-                          className={cn(
-                            "rounded-xl px-3 py-2 text-center text-sm font-semibold",
-                            getMatrixCellClass(value, matrixDisplay),
-                          )}
+                          className={cn("rounded-xl px-3 py-2 text-center text-sm font-semibold")}
+                          style={{
+                            backgroundColor: `color-mix(in srgb, hsl(var(--foreground)) ${getHeatmapStrength(value, matrixDisplay)}%, transparent)`,
+                            color:
+                              getHeatmapStrength(value, matrixDisplay) > 40
+                                ? "hsl(var(--background))"
+                                : "hsl(var(--foreground))",
+                          }}
                         >
                           {matrixDisplay === "relative" ? formatPercent(value) : formatCurrency(value)}
                         </div>

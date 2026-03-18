@@ -21,7 +21,7 @@ export const retentionChartConfig: ChartSeriesConfig[] = [
 
 export const paybackChartConfig: ChartSeriesConfig[] = [
   { key: "cumulativeLtv", label: "累计 LTV", color: "hsl(var(--foreground))" },
-  { key: "retentionRate", label: "续订留存率", color: "hsl(var(--chart-4))" },
+  { key: "retentionRate", label: "续订留存率", color: "hsl(var(--chart-2))" },
 ];
 
 export const forecastRevenueChartConfig: ChartSeriesConfig[] = [
@@ -108,7 +108,7 @@ export const defaultPaybackData: PaybackData = {
   summaryMetrics: [
     { label: "整体 LTV", value: "¥350.18", hint: "覆盖所有付费周期 cohort 的累计收入贡献" },
     { label: "90 日 LTV", value: "¥3,645.00", hint: "第三个月内累计贡献，用于衡量初期效率" },
-    { label: "回本周期", value: "21 天", hint: "投放回收完成于大盘层面", tone: "highlight" },
+    { label: "回本周期", value: "21 天", hint: "投放回收完成于大盘层面" },
     { label: "LTV / CAC", value: "3.2", hint: "高于 3 通常意味着投放模型具备扩张空间" },
   ],
   renewalCurve: [
