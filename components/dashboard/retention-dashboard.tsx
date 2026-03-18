@@ -25,7 +25,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   chartAxisColor,
@@ -178,7 +178,25 @@ export function RetentionDashboard({
 
       <Card className="rounded-2xl border border-border bg-card shadow-none">
         <CardHeader className="space-y-5 p-5 pb-0">
-          <CardTitle className="text-base font-semibold">续订阶段曲线</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-base font-semibold">续订阶段曲线</CardTitle>
+            <div className="flex gap-1">
+              {dashboardData.viewTabs.map((tab) => (
+                <button
+                  key={tab.value}
+                  onClick={() => setActiveTab(tab.value)}
+                  className={cn(
+                    "px-3 py-1 text-sm rounded-lg transition-colors outline-none",
+                    activeTab === tab.value
+                      ? "text-foreground font-semibold"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
           <div className="flex flex-wrap items-center gap-2">
             <ToggleGroup
               type="single"
@@ -284,21 +302,7 @@ export function RetentionDashboard({
 
         <CardContent className="space-y-5 p-5">
           <div className="rounded-2xl border border-border bg-background p-5">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="gap-4">
-              <TabsList variant="line" className="h-10 w-full border-b border-border">
-                {dashboardData.viewTabs.map((tab) => (
-                  <TabsTrigger
-                    key={tab.value}
-                    value={tab.value}
-                    className="h-10 px-4 text-sm font-medium"
-                  >
-                    {tab.label}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </Tabs>
-
-            <div className="h-[320px] pt-4">
+            <div className="h-[320px]">
               {isMounted ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={chartData} margin={{ top: 6, right: 8, left: -18, bottom: 14 }}>
