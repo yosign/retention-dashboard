@@ -25,5 +25,13 @@ const baseUrl = process.env.SCREENSHOT_BASE_URL ?? "http://localhost:3000";
   await page.screenshot({ path: "payback-final.png", fullPage: true });
   console.log("payback done");
 
+  await page.goto(`${baseUrl}/forecast`, {
+    waitUntil: "networkidle",
+    timeout: 20000,
+  });
+  await page.waitForTimeout(2000);
+  await page.screenshot({ path: "forecast-v1.png", fullPage: true });
+  console.log("forecast done");
+
   await browser.close();
 })();

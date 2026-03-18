@@ -4,12 +4,14 @@ interface DashboardShellProps {
   children: ReactNode;
   eyebrow?: string;
   title: string;
+  description?: string;
 }
 
 export function DashboardShell({
   children,
   eyebrow,
   title,
+  description,
 }: DashboardShellProps) {
   return (
     <div className="dashboard-shell space-y-6">
@@ -23,6 +25,11 @@ export function DashboardShell({
           <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
             {title}
           </h1>
+          {description ? (
+            <p className="max-w-3xl text-sm text-muted-foreground sm:text-base">
+              {description}
+            </p>
+          ) : null}
         </div>
       </header>
       <main className="space-y-6">{children}</main>

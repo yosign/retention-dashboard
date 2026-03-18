@@ -18,6 +18,17 @@ export interface SummaryMetric {
   tone?: "default" | "highlight";
 }
 
+export interface ChartSeriesConfig {
+  key: string;
+  label: string;
+  color: string;
+}
+
+export interface DashboardTabItem {
+  value: string;
+  label: string;
+}
+
 export interface RetentionCurvePoint {
   stage: string;
   overall: number;
@@ -50,6 +61,8 @@ export interface RetentionData {
   segmentColumns: string[];
   segmentRows: RetentionSegmentRow[];
   subscriptionCycles: string[];
+  periodOptions: Array<{ value: string; label: string }>;
+  viewTabs: DashboardTabItem[];
 }
 
 export interface RetentionPageProps {
@@ -94,6 +107,7 @@ export interface PaybackData {
   matrixSummary: PaybackMatrixSummary[];
   matrixMetricOptions: string[];
   matrixGranularityOptions: string[];
+  curveLegendLabel: string;
 }
 
 export interface PaybackPageProps {
@@ -101,4 +115,41 @@ export interface PaybackPageProps {
   onFilterChange?: (filter: FilterState) => void;
   onExport?: () => void;
   onPeriodChange?: (period: string) => void;
+}
+
+export interface ForecastSummaryMetric extends SummaryMetric {
+  badge?: string;
+  badgeTone?: "default" | "positive" | "negative";
+}
+
+export interface ForecastChartPoint {
+  month: string;
+  actualRevenue: number | null;
+  forecastRevenue: number | null;
+  actualSubscribers: number | null;
+  forecastSubscribers: number | null;
+}
+
+export interface ForecastValidationLink {
+  href: string;
+  title: string;
+  description: string;
+  icon: "bar-chart" | "trend-up" | "trend-down" | "currency";
+}
+
+export interface ForecastValidationMetric {
+  label: string;
+  value: string;
+  hint: string;
+}
+
+export interface ForecastData {
+  summaryMetrics: ForecastSummaryMetric[];
+  chart: ForecastChartPoint[];
+  validationLinks: ForecastValidationLink[];
+  validationMetrics: ForecastValidationMetric[];
+}
+
+export interface ForecastPageProps {
+  data?: ForecastData;
 }

@@ -33,6 +33,8 @@
     --chart-3: oklch(0.546 0.245 262.881);
     --chart-4: oklch(0.488 0.243 264.376);
     --chart-5: oklch(0.424 0.199 265.638);
+    --chart-6: oklch(0.78 0.14 84);
+    --chart-7: oklch(0.68 0.11 200);
     --radius: 0.625rem;
     --sidebar: oklch(0.985 0 0);
     --sidebar-foreground: oklch(0.145 0 0);
@@ -67,6 +69,8 @@
     --chart-3: oklch(0.546 0.245 262.881);
     --chart-4: oklch(0.488 0.243 264.376);
     --chart-5: oklch(0.424 0.199 265.638);
+    --chart-6: oklch(0.78 0.14 84);
+    --chart-7: oklch(0.68 0.11 200);
     --sidebar: oklch(0.205 0 0);
     --sidebar-foreground: oklch(0.985 0 0);
     --sidebar-primary: oklch(0.488 0.243 264.376);
@@ -86,9 +90,21 @@
   body {
     @apply bg-background text-foreground;
     background-image:
-      linear-gradient(to right, rgba(17, 17, 17, 0.03) 1px, transparent 1px),
-      linear-gradient(to bottom, rgba(17, 17, 17, 0.03) 1px, transparent 1px),
-      radial-gradient(circle at top, rgba(17, 17, 17, 0.05), transparent 38%);
+      linear-gradient(
+        to right,
+        color-mix(in oklab, hsl(var(--foreground)) 3%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in oklab, hsl(var(--foreground)) 3%, transparent) 1px,
+        transparent 1px
+      ),
+      radial-gradient(
+        circle at top,
+        color-mix(in oklab, hsl(var(--foreground)) 5%, transparent),
+        transparent 38%
+      );
     background-size: 64px 64px, 64px 64px, 100% 100%;
   }
   html {
