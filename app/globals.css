@@ -89,7 +89,11 @@
   }
   *:focus-visible {
     outline: none !important;
-    box-shadow: 0 0 0 2px hsl(var(--foreground)) !important;
+    box-shadow: none !important;
+  }
+  *:focus {
+    outline: none !important;
+    box-shadow: none !important;
   }
   body {
     @apply bg-background text-foreground;
@@ -131,4 +135,24 @@
 [data-radix-collection-item][data-state="on"] {
   background-color: #18181b !important;
   color: #fafafa !important;
+}
+
+/* Suppress all focus rings globally */
+button:focus,
+button:focus-visible,
+[role="button"]:focus,
+[role="button"]:focus-visible,
+[role="radio"]:focus,
+[role="radio"]:focus-visible,
+input:focus,
+input:focus-visible,
+select:focus,
+select:focus-visible,
+textarea:focus,
+textarea:focus-visible,
+[tabindex]:focus,
+[tabindex]:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+  ring: 0 !important;
 }
