@@ -1,72 +1,58 @@
-import Link from "next/link";
-import { ArrowRight, BarChart3, LineChart, TrendingUp } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { RetentionDashboard } from "@/components/dashboard/retention-dashboard";
+import { PaybackDashboard } from "@/components/dashboard/payback-dashboard";
+import { ForecastDashboard } from "@/components/dashboard/forecast-dashboard";
+import { defaultRetentionData, defaultPaybackData, defaultForecastData } from "@/lib/dashboard-data";
 
-const pages = [
-  {
-    href: "/retention",
-    title: "留存分析",
-    description: "查看续订阶段曲线、分段留存和 cohort 数据。",
-    icon: TrendingUp,
-  },
-  {
-    href: "/payback",
-    title: "回本分析",
-    description: "查看 LTV 曲线、回本周期和回本矩阵。",
-    icon: BarChart3,
-  },
-  {
-    href: "/forecast",
-    title: "收入预测",
-    description: "查看 MRR 和订阅数趋势外推与交叉验证结果。",
-    icon: LineChart,
-  },
-];
+export default function Home({
+  searchParams,
+}: {
+  searchParams: { tab?: string };
+}) {
+  const tab = searchParams?.tab ?? "retention";
 
-export default function Home() {
   return (
-    <main className="dashboard-shell flex min-h-screen items-center">
-      <div className="w-full space-y-8">
-        <div className="space-y-3">
-          <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
-            Dashboard Routes
-          </p>
-          <h1 className="text-4xl font-semibold tracking-tight text-foreground">
-            订阅业务分析面板
-          </h1>
-          <p className="max-w-2xl text-base text-muted-foreground">
-            选择一个页面进入。首页包含到留存、回本和收入预测三个分析视图的入口。
-          </p>
+    <main className="min-h-screen bg-background">
+      <Tabs defaultValue={tab} className="w-full">
+        {/* Tab 导航栏 */}
+        <div className="sticky top-0 z-10 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <div className="mx-auto max-w-screen-2xl px-6">
+            <TabsList className="h-12 bg-transparent p-0 gap-0">
+              <TabsTrigger
+                value="retention"
+                className="relative h-12 rounded-none border-b-2 border-transparent px-4 pb-0 pt-0 font-medium text-muted-foreground data-[state=active]:border-foreground data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+              >
+                留存分析
+              </TabsTrigger>
+              <TabsTrigger
+                value="payback"
+                className="relative h-12 rounded-none border-b-2 border-transparent px-4 pb-0 pt-0 font-medium text-muted-foreground data-[state=active]:border-foreground data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+              >
+                回本分析
+              </TabsTrigger>
+              <TabsTrigger
+                value="forecast"
+                className="relative h-12 rounded-none border-b-2 border-transparent px-4 pb-0 pt-0 font-medium text-muted-foreground data-[state=active]:border-foreground data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+              >
+                收入预测
+              </TabsTrigger>
+            </TabsList>
+          </div>
         </div>
 
-        <section className="grid gap-4 md:grid-cols-3">
-          {pages.map((page) => {
-            const Icon = page.icon;
+        {/* Tab 内容 */}
+        <TabsContent value="retention" className="mt-0">
+          <RetentionDashboard data={defaultRetentionData} />
+        </TabsContent>
 
-            return (
-              <Link key={page.href} href={page.href}>
-                <Card className="dashboard-panel h-full transition-transform duration-200 hover:-translate-y-1">
-                  <CardHeader className="space-y-4 pb-3">
-                    <div className="flex size-12 items-center justify-center rounded-2xl bg-muted text-foreground">
-                      <Icon className="size-6" />
-                    </div>
-                    <CardTitle className="text-2xl font-semibold">{page.title}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <p className="text-sm leading-6 text-muted-foreground">
-                      {page.description}
-                    </p>
-                    <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-                      <span>打开页面</span>
-                      <ArrowRight className="size-4" />
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            );
-          })}
-        </section>
-      </div>
+        <TabsContent value="payback" className="mt-0">
+          <PaybackDashboard data={defaultPaybackData} />
+        </TabsContent>
+
+        <TabsContent value="forecast" className="mt-0">
+          <ForecastDashboard data={defaultForecastData} />
+        </TabsContent>
+      </Tabs>
     </main>
   );
 }

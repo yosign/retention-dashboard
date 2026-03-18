@@ -16,26 +16,35 @@ export function MetricCard({
   return (
     <article
       className={cn(
-        "dashboard-panel rounded-[24px] px-5 py-4 sm:px-6",
+        "dashboard-panel rounded-[24px] border border-border px-5 py-4 sm:px-6",
         highlight &&
-          "!border-black !bg-black !text-white shadow-[0_28px_70px_-42px_rgba(17,17,17,0.9)]",
+          "border-foreground bg-foreground text-background shadow-[0_28px_70px_-42px_color-mix(in_oklab,hsl(var(--foreground))_90%,transparent)]",
       )}
-      style={highlight ? { backgroundColor: "#000", borderColor: "#000" } : undefined}
     >
       <div className="space-y-2">
-        <p className={cn("text-sm text-muted-foreground", highlight && "!text-white/70")}>
+        <p
+          className={cn(
+            "text-sm text-muted-foreground",
+            highlight && "text-background/70",
+          )}
+        >
           {label}
         </p>
         <p
           className={cn(
             "text-3xl font-semibold tracking-tight text-foreground",
-            highlight && "!text-white",
+            highlight && "text-background",
           )}
         >
           {value}
         </p>
         {hint ? (
-          <p className={cn("text-sm text-muted-foreground", highlight && "!text-white/60")}>
+          <p
+            className={cn(
+              "text-sm text-muted-foreground",
+              highlight && "text-background/60",
+            )}
+          >
             {hint}
           </p>
         ) : null}

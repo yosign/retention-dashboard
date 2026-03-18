@@ -32,7 +32,13 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { defaultPaybackData } from "@/lib/dashboard-data";
+import {
+  chartAxisColor,
+  chartGridColor,
+  defaultPaybackData,
+  paybackChartConfig,
+} from "@/lib/dashboard-data";
+import { usePaybackMatrixData } from "@/lib/hooks/use-payback-matrix-data";
 import { cn } from "@/lib/utils";
 import type { FilterState, PaybackPageProps } from "@/src/types/dashboard";
 
@@ -50,12 +56,6 @@ function formatCurrency(value: number) {
 function formatPercent(value: number) {
   return `${value.toFixed(value % 1 === 0 ? 0 : 1)}%`;
 }
-
-const pillClassName =
-  "rounded-full border border-black/10 bg-white px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors";
-
-const activePillClassName =
-  "data-[state=active]:border-black data-[state=active]:bg-black data-[state=active]:text-white data-[state=on]:border-black data-[state=on]:bg-black data-[state=on]:text-white";
 
 function buildPaybackFilter(
   paybackView: PaybackView,
@@ -87,11 +87,14 @@ function PaybackTooltip({
   }
 
   return (
-    <div className="rounded-2xl border border-border/60 bg-white/95 p-4 shadow-xl">
-      <div className="mb-3 text-sm font-semibold text-foreground">{label}</div>
+    <div className="rounded-2xl border border-border bg-popover/95 p-4 shadow-xl backdrop-blur">
+      <div className="mb-3 text-sm font-semibold text-popover-foreground">{label}</div>
       <div className="space-y-2 text-sm">
         {payload.map((item) => (
-          <div key={item.name} className="flex min-w-48 items-center justify-between gap-6">
+          <div
+            key={item.name}
+            className="flex min-w-48 items-center justify-between gap-6"
+          >
             <div className="flex items-center gap-2 text-muted-foreground">
               <span className="size-2 rounded-full" style={{ backgroundColor: item.color }} />
               <span>{item.name}</span>
@@ -110,16 +113,16 @@ function PaybackTooltip({
 
 function getMatrixCellClass(value: number, display: MatrixDisplay) {
   if (display === "relative") {
-    if (value >= 80) return "bg-neutral-950 text-white";
-    if (value >= 60) return "bg-neutral-800 text-white";
-    if (value >= 40) return "bg-neutral-700 text-white";
-    return "bg-neutral-200 text-neutral-700";
+    if (value >= 80) return "bg-foreground text-background";
+    if (value >= 60) return "bg-foreground/85 text-background";
+    if (value >= 40) return "bg-foreground/70 text-background";
+    return "bg-muted text-muted-foreground";
   }
 
-  if (value >= 420) return "bg-neutral-950 text-white";
-  if (value >= 340) return "bg-neutral-800 text-white";
-  if (value >= 240) return "bg-neutral-700 text-white";
-  return "bg-neutral-200 text-neutral-700";
+  if (value >= 420) return "bg-foreground text-background";
+  if (value >= 340) return "bg-foreground/85 text-background";
+  if (value >= 240) return "bg-foreground/70 text-background";
+  return "bg-muted text-muted-foreground";
 }
 
 export function PaybackDashboard({
@@ -147,20 +150,12 @@ export function PaybackDashboard({
 
   const curveData =
     paybackView === "renewal" ? dashboardData.renewalCurve : dashboardData.dailyCurve;
-
-  const visibleColumns = dashboardData.matrixColumns.slice(
-    0,
-    horizon === "6" ? 6 : dashboardData.matrixColumns.length,
+  const { visibleColumns, matrixRows } = usePaybackMatrixData(
+    dashboardData.matrixColumns,
+    dashboardData.matrixRows,
+    horizon,
+    matrixDisplay,
   );
-
-  const matrixRows = dashboardData.matrixRows.map((row) => ({
-    ...row,
-    values: row.values.slice(0, visibleColumns.length).map((value, index) =>
-      matrixDisplay === "relative"
-        ? Number(((value / row.values[row.values.length - 1]) * 100).toFixed(index === 0 ? 0 : 1))
-        : value,
-    ),
-  }));
 
   const pushFilterChange = (
     nextView: PaybackView,
@@ -182,7 +177,7 @@ export function PaybackDashboard({
 
   return (
     <DashboardShell eyebrow="收入与回收分析" title="回本分析">
-      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
         {dashboardData.summaryMetrics.map((metric) => (
           <MetricCard
             key={metric.label}
@@ -194,54 +189,63 @@ export function PaybackDashboard({
         ))}
       </section>
 
-      <Card className="dashboard-panel overflow-hidden border-border/50">
-        <CardHeader className="gap-4 pb-2">
-          <div className="flex flex-col gap-4">
-            <CardTitle className="text-xl font-semibold">回本曲线</CardTitle>
-          </div>
+      <Card className="dashboard-panel overflow-hidden">
+        <CardHeader className="gap-4 border-b border-border/60 pb-4">
+          <CardTitle className="text-xl font-semibold">回本曲线</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6 p-4 pt-2 sm:p-6 sm:pt-2">
-          <div className="rounded-[28px] border border-black/10 bg-white/95 p-4 sm:p-5">
-            <div className="mb-4 flex flex-col gap-3 border-b border-black/8 pb-3 lg:flex-row lg:items-center lg:justify-between">
-              <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground">
-                <span>P1 → P12</span>
-                <span>累计 LTV</span>
+        <CardContent className="space-y-6 p-4 pt-5 sm:p-6">
+          <div className="rounded-[28px] border border-border bg-card p-4 sm:p-5">
+            <div className="relative h-[300px] w-full">
+              <div className="absolute left-0 top-0 z-10 flex items-center gap-2 text-xs font-medium text-muted-foreground">
+                <span>{dashboardData.curveLegendLabel}</span>
               </div>
-            <Tabs
-              value={paybackView}
-              onValueChange={(value) => {
-                const next = value as PaybackView;
-                setPaybackView(next);
-                onPeriodChange?.(next);
-                pushFilterChange(next, matrixMetric, matrixGranularity, matrixDisplay, horizon);
-              }}
-            >
-              <TabsList className="rounded-full bg-transparent p-0">
-                <TabsTrigger value="renewal" className={`${pillClassName} ${activePillClassName}`}>
-                  按续订
-                </TabsTrigger>
-                <TabsTrigger value="daily" className={`${pillClassName} ${activePillClassName}`}>
-                  按天
-                </TabsTrigger>
-              </TabsList>
-            </Tabs>
-            </div>
-            <div className="h-[300px] w-full">
+              <div className="absolute right-0 top-0 z-10">
+                <Tabs
+                  value={paybackView}
+                  onValueChange={(value) => {
+                    const next = value as PaybackView;
+                    setPaybackView(next);
+                    onPeriodChange?.(next);
+                    pushFilterChange(
+                      next,
+                      matrixMetric,
+                      matrixGranularity,
+                      matrixDisplay,
+                      horizon,
+                    );
+                  }}
+                >
+                  <TabsList className="rounded-full border border-border bg-background p-1">
+                    <TabsTrigger
+                      value="renewal"
+                      className="rounded-full px-3 py-1.5 text-xs font-medium data-[state=active]:bg-foreground data-[state=active]:text-background"
+                    >
+                      按续订
+                    </TabsTrigger>
+                    <TabsTrigger
+                      value="daily"
+                      className="rounded-full px-3 py-1.5 text-xs font-medium data-[state=active]:bg-foreground data-[state=active]:text-background"
+                    >
+                      按天
+                    </TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              </div>
               <ResponsiveContainer width="100%" height="100%">
                 <ComposedChart
                   data={curveData}
-                  margin={{ top: 6, right: 10, left: -8, bottom: 18 }}
+                  margin={{ top: 28, right: 10, left: -8, bottom: 18 }}
                 >
                   <CartesianGrid
                     strokeDasharray="4 8"
-                    stroke="rgba(17,17,17,0.08)"
+                    stroke={chartGridColor}
                     vertical={false}
                   />
                   <XAxis
                     dataKey="period"
                     tickLine={false}
                     axisLine={false}
-                    tick={{ fill: "#8a8a8a", fontSize: 11 }}
+                    tick={{ fill: chartAxisColor, fontSize: 11 }}
                   />
                   <YAxis
                     yAxisId="left"
@@ -251,7 +255,7 @@ export function PaybackDashboard({
                     domain={[0, 360]}
                     ticks={[0, 90, 180, 270, 360]}
                     tickFormatter={(value) => `¥${value}`}
-                    tick={{ fill: "#8a8a8a", fontSize: 11 }}
+                    tick={{ fill: chartAxisColor, fontSize: 11 }}
                   />
                   <YAxis
                     yAxisId="right"
@@ -261,15 +265,15 @@ export function PaybackDashboard({
                     domain={[0, 100]}
                     ticks={[0, 25, 50, 75, 100]}
                     tickFormatter={(value) => `${value}%`}
-                    tick={{ fill: "#8a8a8a", fontSize: 11 }}
+                    tick={{ fill: chartAxisColor, fontSize: 11 }}
                   />
                   <Tooltip content={<PaybackTooltip />} />
                   <Line
                     yAxisId="left"
                     type="monotone"
                     dataKey="cumulativeLtv"
-                    name="累计 LTV"
-                    stroke="#111111"
+                    name={paybackChartConfig[0].label}
+                    stroke={paybackChartConfig[0].color}
                     strokeWidth={2.5}
                     dot={false}
                     isAnimationActive={false}
@@ -279,8 +283,8 @@ export function PaybackDashboard({
                     yAxisId="right"
                     type="monotone"
                     dataKey="retentionRate"
-                    name="续订留存率"
-                    stroke="#3B82F6"
+                    name={paybackChartConfig[1].label}
+                    stroke={paybackChartConfig[1].color}
                     strokeWidth={2}
                     strokeDasharray="4 6"
                     dot={false}
@@ -291,20 +295,27 @@ export function PaybackDashboard({
               </ResponsiveContainer>
             </div>
             <div className="mt-3 flex flex-wrap items-center justify-center gap-4 text-xs font-medium text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <span className="size-2 rounded-full bg-black" />
-                <span>累计 LTV</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="size-2 rounded-full" style={{ backgroundColor: "#3B82F6" }} />
-                <span>续订留存率</span>
-              </div>
+              {paybackChartConfig.map((item, index) => (
+                <div key={item.key} className="flex items-center gap-2">
+                  <span
+                    className={cn(
+                      "size-2 rounded-full",
+                      index === 0 && "bg-foreground",
+                    )}
+                    style={index === 0 ? undefined : { backgroundColor: item.color }}
+                  />
+                  <span>{item.label}</span>
+                </div>
+              ))}
             </div>
           </div>
 
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {dashboardData.statCards.map((card) => (
-              <Card key={card.label} className="rounded-[24px] border-black/10 bg-white shadow-none">
+              <Card
+                key={card.label}
+                className="rounded-[24px] border border-border bg-card shadow-none"
+              >
                 <CardContent className="space-y-3 p-5">
                   <div className="text-sm text-muted-foreground">{card.label}</div>
                   <div className="text-3xl font-semibold tracking-tight">{card.value}</div>
@@ -315,8 +326,8 @@ export function PaybackDashboard({
         </CardContent>
       </Card>
 
-      <Card className="dashboard-panel overflow-hidden border-border/50">
-        <CardHeader className="gap-4 border-b border-border/50 pb-5">
+      <Card className="dashboard-panel overflow-hidden">
+        <CardHeader className="gap-4 border-b border-border/60 pb-5">
           <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
             <CardTitle className="text-xl font-semibold">同期群回本矩阵</CardTitle>
             <div className="flex flex-wrap items-center gap-2">
@@ -324,10 +335,16 @@ export function PaybackDashboard({
                 value={matrixMetric}
                 onValueChange={(value) => {
                   setMatrixMetric(value);
-                  pushFilterChange(paybackView, value, matrixGranularity, matrixDisplay, horizon);
+                  pushFilterChange(
+                    paybackView,
+                    value,
+                    matrixGranularity,
+                    matrixDisplay,
+                    horizon,
+                  );
                 }}
               >
-                <SelectTrigger className="h-9 w-[132px] rounded-full border-black/10 bg-white text-xs font-medium">
+                <SelectTrigger className="h-9 w-[132px] rounded-full border-border bg-background text-xs font-medium">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -339,7 +356,7 @@ export function PaybackDashboard({
                 </SelectContent>
               </Select>
               <Select value={matrixBreakdown} onValueChange={setMatrixBreakdown}>
-                <SelectTrigger className="h-9 w-[118px] rounded-full border-black/10 bg-white text-xs font-medium">
+                <SelectTrigger className="h-9 w-[118px] rounded-full border-border bg-background text-xs font-medium">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -352,10 +369,16 @@ export function PaybackDashboard({
                 value={matrixGranularity}
                 onValueChange={(value) => {
                   setMatrixGranularity(value);
-                  pushFilterChange(paybackView, matrixMetric, value, matrixDisplay, horizon);
+                  pushFilterChange(
+                    paybackView,
+                    matrixMetric,
+                    value,
+                    matrixDisplay,
+                    horizon,
+                  );
                 }}
               >
-                <SelectTrigger className="h-9 w-[132px] rounded-full border-black/10 bg-white text-xs font-medium">
+                <SelectTrigger className="h-9 w-[132px] rounded-full border-border bg-background text-xs font-medium">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -373,13 +396,25 @@ export function PaybackDashboard({
                   if (!value) return;
                   const next = value as MatrixDisplay;
                   setMatrixDisplay(next);
-                  pushFilterChange(paybackView, matrixMetric, matrixGranularity, next, horizon);
+                  pushFilterChange(
+                    paybackView,
+                    matrixMetric,
+                    matrixGranularity,
+                    next,
+                    horizon,
+                  );
                 }}
               >
-                <ToggleGroupItem value="absolute" className={`${pillClassName} ${activePillClassName}`}>
+                <ToggleGroupItem
+                  value="absolute"
+                  className="rounded-full border border-border bg-background px-3 py-2 text-xs font-medium text-muted-foreground transition-colors data-[state=on]:bg-foreground data-[state=on]:text-background"
+                >
                   绝对
                 </ToggleGroupItem>
-                <ToggleGroupItem value="relative" className={`${pillClassName} ${activePillClassName}`}>
+                <ToggleGroupItem
+                  value="relative"
+                  className="rounded-full border border-border bg-background px-3 py-2 text-xs font-medium text-muted-foreground transition-colors data-[state=on]:bg-foreground data-[state=on]:text-background"
+                >
                   相对
                 </ToggleGroupItem>
               </ToggleGroup>
@@ -390,19 +425,31 @@ export function PaybackDashboard({
                   if (!value) return;
                   const next = value as MatrixHorizon;
                   setHorizon(next);
-                  pushFilterChange(paybackView, matrixMetric, matrixGranularity, matrixDisplay, next);
+                  pushFilterChange(
+                    paybackView,
+                    matrixMetric,
+                    matrixGranularity,
+                    matrixDisplay,
+                    next,
+                  );
                 }}
               >
-                <ToggleGroupItem value="6" className={`${pillClassName} ${activePillClassName}`}>
-                  6 期
+                <ToggleGroupItem
+                  value="6"
+                  className="rounded-full border border-border bg-background px-3 py-2 text-xs font-medium text-muted-foreground transition-colors data-[state=on]:bg-foreground data-[state=on]:text-background"
+                >
+                  6期
                 </ToggleGroupItem>
-                <ToggleGroupItem value="12" className={`${pillClassName} ${activePillClassName}`}>
-                  12 期
+                <ToggleGroupItem
+                  value="12"
+                  className="rounded-full border border-border bg-background px-3 py-2 text-xs font-medium text-muted-foreground transition-colors data-[state=on]:bg-foreground data-[state=on]:text-background"
+                >
+                  12期
                 </ToggleGroupItem>
               </ToggleGroup>
               <Button
                 variant="outline"
-                className="h-9 rounded-full border-black/10 bg-white px-4 text-xs font-medium"
+                className="h-9 rounded-full border-border bg-background px-4 text-xs font-medium"
                 onClick={() => onExport?.()}
               >
                 <Download className="mr-2 size-4" />
@@ -414,7 +461,10 @@ export function PaybackDashboard({
         <CardContent className="space-y-6 p-4 sm:p-6">
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {dashboardData.matrixSummary.map((item) => (
-              <Card key={item.label} className="rounded-[24px] border-black/10 bg-white shadow-none">
+              <Card
+                key={item.label}
+                className="rounded-[24px] border border-border bg-card shadow-none"
+              >
                 <CardContent className="space-y-3 p-5">
                   <div className="text-sm text-muted-foreground">{item.label}</div>
                   <div className="text-2xl font-semibold tracking-tight">{item.value}</div>
@@ -424,7 +474,7 @@ export function PaybackDashboard({
             ))}
           </div>
 
-          <div className="overflow-x-auto rounded-[24px] border border-black/10 bg-white p-2">
+          <div className="overflow-x-auto rounded-[24px] border border-border bg-card p-2">
             <Table>
               <TableHeader>
                 <TableRow className="hover:bg-transparent">
@@ -460,8 +510,12 @@ export function PaybackDashboard({
                         </div>
                       </TableCell>
                     ))}
-                    <TableCell className="text-right font-medium">{row.totalRevenue}</TableCell>
-                    <TableCell className="text-right font-medium">{row.averageLtv}</TableCell>
+                    <TableCell className="text-right font-medium">
+                      {row.totalRevenue}
+                    </TableCell>
+                    <TableCell className="text-right font-medium">
+                      {row.averageLtv}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

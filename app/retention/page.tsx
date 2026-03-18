@@ -1,4 +1,4 @@
-import { RetentionDashboard } from "@/components/retention-dashboard";
+import { RetentionDashboard } from "@/components/dashboard/retention-dashboard";
 import { defaultRetentionData } from "@/lib/dashboard-data";
 
 export default function RetentionPage() {
