@@ -34,3 +34,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+node_modules/
+.next/
+*.png
+*.log
+pnpm-lock.yaml
+LONG_TASK.md
+TASK.md
