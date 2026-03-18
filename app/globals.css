@@ -125,3 +125,10 @@
     @apply rounded-2xl border bg-card shadow-none;
   }
 }
+
+/* Force toolbar toggle active state: black bg + white text */
+[role="group"] button[data-state="on"],
+[data-radix-collection-item][data-state="on"] {
+  background-color: #18181b !important;
+  color: #fafafa !important;
+}

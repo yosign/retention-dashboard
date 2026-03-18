@@ -178,47 +178,30 @@ export function RetentionDashboard({
 
       <Card className="rounded-2xl border border-border bg-card shadow-none">
         <CardHeader className="space-y-4 p-5 pb-0">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-base font-semibold">续订阶段曲线</CardTitle>
-            <div className="flex gap-1">
-              {dashboardData.viewTabs.map((tab) => (
+          <CardTitle className="text-base font-semibold">续订阶段曲线</CardTitle>
+          <div className="flex flex-wrap items-center gap-2">
+            <div className="flex flex-wrap items-center gap-1">
+              {dashboardData.periodOptions.map((option) => (
                 <button
-                  key={tab.value}
-                  onClick={() => setActiveTab(tab.value)}
+                  key={option.value}
+                  type="button"
+                  onClick={() => {
+                    setRange(option.value);
+                    onPeriodChange?.(option.value);
+                    pushFilter(option.value, subscriptionCycle, displayMode, includeTrial);
+                  }}
                   className={cn(
-                    "rounded-lg px-3 py-1 text-sm transition-colors",
-                    activeTab === tab.value
-                      ? "text-foreground font-semibold"
-                      : "text-muted-foreground hover:text-foreground"
+                    "h-10 rounded-xl px-3 text-sm transition-colors",
+                    range === option.value
+                      ? "border border-transparent"
+                      : "border border-border bg-background hover:bg-muted"
                   )}
+                  style={range === option.value ? { backgroundColor: "#18181b", color: "#fafafa" } : undefined}
                 >
-                  {tab.label}
+                  {option.label}
                 </button>
               ))}
             </div>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <ToggleGroup
-              type="single"
-              value={range}
-              onValueChange={(value) => {
-                if (!value) return;
-                setRange(value);
-                onPeriodChange?.(value);
-                pushFilter(value, subscriptionCycle, displayMode, includeTrial);
-              }}
-              className="gap-1"
-            >
-              {dashboardData.periodOptions.map((option) => (
-                <ToggleGroupItem
-                  key={option.value}
-                  value={option.value}
-                  className="h-10 rounded-xl border border-border px-3 text-sm data-[state=on]:bg-foreground data-[state=on]:text-background"
-                >
-                  {option.label}
-                </ToggleGroupItem>
-              ))}
-            </ToggleGroup>
 
             <Select
               value={subscriptionCycle}
@@ -302,6 +285,23 @@ export function RetentionDashboard({
 
         <CardContent className="space-y-5 p-5">
           <div className="rounded-2xl border border-border bg-background p-5">
+            <div className="mb-4 flex flex-wrap gap-6 border-b border-border pb-3">
+              {dashboardData.viewTabs.map((tab) => (
+                <button
+                  key={tab.value}
+                  type="button"
+                  onClick={() => setActiveTab(tab.value)}
+                  className={cn(
+                    "border-b-2 border-transparent pb-1 text-sm transition-colors",
+                    activeTab === tab.value
+                      ? "border-foreground font-medium text-foreground"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
             <div className="h-[320px]">
               {isMounted ? (
                 <ResponsiveContainer width="100%" height="100%">
