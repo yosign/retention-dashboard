@@ -283,7 +283,7 @@ export function RetentionDashboard({
 
         <CardContent className="space-y-5 p-5">
           <div className="rounded-2xl border border-border bg-background p-5">
-            <div className="mb-4 flex flex-wrap items-center gap-6 border-b border-border pb-3">
+            <div className="mb-4 flex flex-wrap items-center gap-6">
               {dashboardData.viewTabs.map((tab) => (
                 <button
                   key={tab.value}
@@ -292,7 +292,7 @@ export function RetentionDashboard({
                   className={cn(
                     "pb-1 text-sm transition-colors",
                     activeTab === tab.value
-                      ? "border-b-2 border-foreground font-medium text-foreground"
+                      ? "font-medium text-foreground"
                       : "text-muted-foreground hover:text-foreground"
                   )}
                 >

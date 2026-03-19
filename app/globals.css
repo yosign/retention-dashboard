@@ -87,11 +87,8 @@
     border-color: hsl(var(--border));
     outline-color: hsl(var(--ring));
   }
+  *:focus,
   *:focus-visible {
-    outline: none !important;
-    box-shadow: none !important;
-  }
-  *:focus {
     outline: none !important;
     box-shadow: none !important;
   }
