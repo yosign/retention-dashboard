@@ -26,7 +26,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   chartAxisColor,
   chartCursorColor,
@@ -193,10 +192,9 @@ export function RetentionDashboard({
                   className={cn(
                     "h-10 rounded-xl px-3 text-sm transition-colors",
                     range === option.value
-                      ? "border border-transparent"
+                      ? "bg-foreground text-background"
                       : "border border-border bg-background hover:bg-muted"
                   )}
-                  style={range === option.value ? { backgroundColor: "#18181b", color: "#fafafa" } : undefined}
                 >
                   {option.label}
                 </button>
@@ -223,30 +221,30 @@ export function RetentionDashboard({
               </SelectContent>
             </Select>
 
-            <ToggleGroup
-              type="single"
-              value={displayMode === "absolute" ? "absolute" : "relative"}
-              onValueChange={(value) => {
-                if (!value) return;
-                const next = value as "relative" | "absolute";
-                setDisplayMode(next);
-                pushFilter(range, subscriptionCycle, next, includeTrial);
-              }}
-              className="gap-0 rounded-xl border border-border bg-background p-1"
-            >
-              <ToggleGroupItem
-                value="relative"
-                className="rounded-xl px-3 text-sm data-[state=on]:bg-foreground data-[state=on]:text-background"
-              >
-                %相对
-              </ToggleGroupItem>
-              <ToggleGroupItem
-                value="absolute"
-                className="rounded-xl px-3 text-sm data-[state=on]:bg-foreground data-[state=on]:text-background"
-              >
-                #绝对
-              </ToggleGroupItem>
-            </ToggleGroup>
+            <div className="flex items-center rounded-xl border border-border bg-background p-1">
+              {[
+                { value: "relative", label: "%相对" },
+                { value: "absolute", label: "#绝对" },
+              ].map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  onClick={() => {
+                    const next = option.value as "relative" | "absolute";
+                    setDisplayMode(next);
+                    pushFilter(range, subscriptionCycle, next, includeTrial);
+                  }}
+                  className={cn(
+                    "rounded-xl px-3 py-2 text-sm transition-colors",
+                    displayMode === option.value
+                      ? "bg-foreground text-background"
+                      : "text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
 
             <Button
               type="button"
@@ -285,16 +283,16 @@ export function RetentionDashboard({
 
         <CardContent className="space-y-5 p-5">
           <div className="rounded-2xl border border-border bg-background p-5">
-            <div className="mb-4 flex flex-wrap gap-6 border-b border-border pb-3">
+            <div className="mb-4 flex flex-wrap items-center gap-6 border-b border-border pb-3">
               {dashboardData.viewTabs.map((tab) => (
                 <button
                   key={tab.value}
                   type="button"
                   onClick={() => setActiveTab(tab.value)}
                   className={cn(
-                    "border-b-2 border-transparent pb-1 text-sm transition-colors",
+                    "pb-1 text-sm transition-colors",
                     activeTab === tab.value
-                      ? "border-foreground font-medium text-foreground"
+                      ? "border-b-2 border-foreground font-medium text-foreground"
                       : "text-muted-foreground hover:text-foreground"
                   )}
                 >
