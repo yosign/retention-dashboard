@@ -19,19 +19,19 @@ export default function Home({
             <TabsList className="h-12 rounded-none border-b border-border bg-transparent p-0">
               <TabsTrigger
                 value="retention"
-                className="h-12 rounded-none border-b-2 border-transparent bg-transparent px-6 font-medium text-muted-foreground shadow-none data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                className="h-12 rounded-none border-b border-transparent bg-transparent px-6 font-medium text-muted-foreground shadow-none data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
               >
                 留存分析
               </TabsTrigger>
               <TabsTrigger
                 value="payback"
-                className="h-12 rounded-none border-b-2 border-transparent bg-transparent px-6 font-medium text-muted-foreground shadow-none data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                className="h-12 rounded-none border-b border-transparent bg-transparent px-6 font-medium text-muted-foreground shadow-none data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
               >
                 回本分析
               </TabsTrigger>
               <TabsTrigger
                 value="forecast"
-                className="h-12 rounded-none border-b-2 border-transparent bg-transparent px-6 font-medium text-muted-foreground shadow-none data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                className="h-12 rounded-none border-b border-transparent bg-transparent px-6 font-medium text-muted-foreground shadow-none data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
               >
                 收入预测
               </TabsTrigger>

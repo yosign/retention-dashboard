@@ -293,7 +293,7 @@ export function RetentionDashboard({
                     "border-b pb-1 text-sm transition-colors",
                     activeTab === tab.value
                       ? "border-foreground font-medium text-foreground"
-                      : "border-transparent text-muted-foreground hover:text-foreground"
+                      : "border-transparent text-muted-foreground hover:text-foreground",
                   )}
                 >
                   {tab.label}
