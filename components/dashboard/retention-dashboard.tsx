@@ -176,9 +176,15 @@ export function RetentionDashboard({
       </section>
 
       <Card className="rounded-2xl border border-border bg-card shadow-none">
-        <CardHeader className="space-y-4 p-5 pb-0">
+        <CardHeader className="p-5 pb-0">
           <CardTitle className="text-base font-semibold">续订阶段曲线</CardTitle>
-          <div className="flex flex-wrap items-center gap-2">
+        </CardHeader>
+
+        {/* toolbar moved inside chart card below */}
+        <CardContent className="p-5 pt-4">
+          <div className="rounded-2xl border border-border bg-background p-5">
+            {/* 工具栏 */}
+            <div className="mb-3 flex flex-wrap items-center gap-2">
             <div className="flex flex-wrap items-center gap-1">
               {dashboardData.periodOptions.map((option) => (
                 <button
@@ -279,11 +285,9 @@ export function RetentionDashboard({
               导出 CSV
             </Button>
           </div>
-        </CardHeader>
 
-        <CardContent className="space-y-5 p-5">
-          <div className="rounded-2xl border border-border bg-background p-5">
-            <div className="mb-4 flex flex-wrap items-center gap-6">
+            {/* Tab 行 */}
+            <div className="mb-3 flex flex-wrap items-center gap-6">
               {dashboardData.viewTabs.map((tab) => (
                 <button
                   key={tab.value}
