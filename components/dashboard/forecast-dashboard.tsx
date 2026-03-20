@@ -59,7 +59,7 @@ function ForecastTooltip({
   }
 
   return (
-    <div className="rounded-xl border border-border bg-popover p-4 text-sm shadow-none">
+    <div className="rounded-xl border border-border bg-popover p-4 text-sm">
       <div className="mb-3 font-medium text-popover-foreground">{label}</div>
       <div className="space-y-2">
         {visibleItems.map((item) => (
@@ -128,7 +128,7 @@ function ForecastChartCard({
   isMounted: boolean;
 }) {
   return (
-    <Card className="rounded-2xl border border-border bg-card shadow-none">
+    <Card className="rounded-2xl bg-card">
       <CardHeader className="p-5 pb-0">
         <CardTitle className="text-base font-semibold">{title}</CardTitle>
       </CardHeader>
@@ -236,7 +236,7 @@ export function ForecastDashboard({ data }: ForecastPageProps) {
       title="收入预测"
       description="基于留存曲线和近期收入变化，对未来收入与订阅规模进行预测。"
     >
-      <section className="rounded-2xl border border-border bg-card shadow-none">
+      <section className="rounded-2xl border border-border bg-card">
         <div className="grid gap-0 divide-y divide-border md:grid-cols-4 md:divide-x md:divide-y-0">
           {dashboardData.summaryMetrics.map((metric) => (
             <div key={metric.label} className="space-y-2 p-5">
@@ -277,7 +277,7 @@ export function ForecastDashboard({ data }: ForecastPageProps) {
         isMounted={isMounted}
       />
 
-      <Card className="rounded-2xl border border-border bg-card shadow-none">
+      <Card className="rounded-2xl bg-card">
         <CardContent className="space-y-5 p-5">
           <div className="flex flex-col gap-4 border border-border rounded-xl p-4">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">

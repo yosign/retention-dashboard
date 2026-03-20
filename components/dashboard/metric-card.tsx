@@ -15,29 +15,34 @@ export function MetricCard({
 }: MetricCardProps) {
   return (
     <article
-      style={highlight ? { backgroundColor: "#18181b", color: "#fafafa" } : undefined}
       className={cn(
-        "rounded-2xl border px-5 py-4 shadow-none",
-        highlight ? "border-transparent" : "border-border bg-card",
+        "rounded-2xl border border-border px-5 py-4",
+        highlight ? "bg-foreground text-background" : "bg-card text-card-foreground",
       )}
     >
       <div className="space-y-2">
         <p
-          className="text-sm"
-          style={highlight ? { color: "rgba(250,250,250,0.7)" } : { color: "hsl(var(--muted-foreground))" }}
+          className={cn(
+            "text-sm",
+            highlight ? "text-background/70" : "text-muted-foreground",
+          )}
         >
           {label}
         </p>
         <p
-          className="text-3xl font-semibold tracking-tight"
-          style={highlight ? { color: "#fafafa" } : { color: "hsl(var(--foreground))" }}
+          className={cn(
+            "text-3xl font-semibold tracking-tight",
+            highlight ? "text-background" : "text-foreground",
+          )}
         >
           {value}
         </p>
         {hint ? (
           <p
-            className="text-sm"
-            style={highlight ? { color: "rgba(250,250,250,0.6)" } : { color: "hsl(var(--muted-foreground))" }}
+            className={cn(
+              "text-sm",
+              highlight ? "text-background/60" : "text-muted-foreground",
+            )}
           >
             {hint}
           </p>

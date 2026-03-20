@@ -87,7 +87,7 @@ function PaybackTooltip({
   }
 
   return (
-    <div className="rounded-xl border border-border bg-popover p-4 text-sm shadow-none">
+    <div className="rounded-xl border border-border bg-popover p-4 text-sm">
       <div className="mb-3 font-medium text-popover-foreground">{label}</div>
       <div className="space-y-2">
         {payload.map((item) => (
@@ -161,7 +161,7 @@ export function PaybackDashboard({
         ))}
       </section>
 
-      <Card className="rounded-2xl border border-border bg-card shadow-none">
+      <Card className="rounded-2xl bg-card">
         <CardHeader className="p-5 pb-3">
           <CardTitle className="text-base font-semibold">回本曲线</CardTitle>
         </CardHeader>
@@ -181,13 +181,13 @@ export function PaybackDashboard({
                 <TabsList className="h-10 rounded-none border-b border-border bg-transparent p-0">
                   <TabsTrigger
                     value="renewal"
-                    className="h-10 rounded-none border-b-2 border-transparent bg-transparent px-4 text-sm font-medium text-muted-foreground shadow-none data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                    className="h-10 rounded-none border-b-2 border-transparent bg-transparent px-4 text-sm font-medium text-muted-foreground data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground"
                   >
                     按续订
                   </TabsTrigger>
                   <TabsTrigger
                     value="daily"
-                    className="h-10 rounded-none border-b-2 border-transparent bg-transparent px-4 text-sm font-medium text-muted-foreground shadow-none data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:shadow-none"
+                    className="h-10 rounded-none border-b-2 border-transparent bg-transparent px-4 text-sm font-medium text-muted-foreground data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground"
                   >
                     按天
                   </TabsTrigger>
@@ -266,7 +266,7 @@ export function PaybackDashboard({
 
             <div className="mt-5 grid gap-4 xl:grid-cols-4">
               {dashboardData.statCards.map((card) => (
-                <Card key={card.label} className="rounded-xl border border-border bg-card shadow-none">
+                <Card key={card.label} className="rounded-xl bg-card">
                   <CardContent className="space-y-2 p-5">
                     <div className="text-sm text-muted-foreground">{card.label}</div>
                     <div className="text-3xl font-semibold tracking-tight">{card.value}</div>
@@ -278,7 +278,7 @@ export function PaybackDashboard({
         </CardContent>
       </Card>
 
-      <Card className="rounded-2xl border border-border bg-card shadow-none">
+      <Card className="rounded-2xl bg-card">
         <CardHeader className="space-y-5 p-5 pb-3">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <CardTitle className="text-base font-semibold">同期群回本矩阵</CardTitle>
@@ -393,7 +393,7 @@ export function PaybackDashboard({
         <CardContent className="space-y-5 p-5 pt-0">
           <div className="grid gap-4 xl:grid-cols-4">
             {infoCards.map((item) => (
-              <Card key={item.label} className="rounded-xl border border-border bg-card shadow-none">
+              <Card key={item.label} className="rounded-xl bg-card">
                 <CardContent className="space-y-2 p-5">
                   <div className="text-sm text-muted-foreground">{item.label}</div>
                   <div className="text-2xl font-semibold tracking-tight">{item.value}</div>

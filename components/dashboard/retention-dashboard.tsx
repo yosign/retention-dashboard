@@ -75,7 +75,7 @@ function RetentionTooltip({
   }
 
   return (
-    <div className="rounded-xl border border-border bg-popover p-4 text-sm shadow-none">
+    <div className="rounded-xl border border-border bg-popover p-4 text-sm">
       <div className="mb-3 font-medium text-popover-foreground">{label}</div>
       <div className="space-y-2">
         {payload.map((item) => {
@@ -175,7 +175,7 @@ export function RetentionDashboard({
         ))}
       </section>
 
-      <Card className="rounded-2xl border border-border bg-card shadow-none">
+      <Card className="rounded-2xl bg-card">
         <CardHeader className="flex flex-row items-center justify-between p-5 pb-4">
           <CardTitle className="text-base font-semibold">续订阶段曲线</CardTitle>
           <div className="flex flex-wrap items-center gap-2">
@@ -357,7 +357,7 @@ export function RetentionDashboard({
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
         {dashboardData.stageCards.map((stage) => (
-          <Card key={stage.stage} className="rounded-xl border border-border bg-card shadow-none">
+          <Card key={stage.stage} className="rounded-xl bg-card">
             <CardContent className="space-y-3 p-5">
               <div className="flex items-start justify-between gap-3">
                 <div className="text-sm font-medium">{stage.stage}</div>
@@ -380,7 +380,7 @@ export function RetentionDashboard({
         ))}
       </section>
 
-      <Card className="rounded-2xl border border-border bg-card shadow-none">
+      <Card className="rounded-2xl bg-card">
         <CardHeader className="p-5 pb-3">
           <CardTitle className="text-base font-semibold">分段数据表</CardTitle>
         </CardHeader>
