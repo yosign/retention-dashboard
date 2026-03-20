@@ -176,15 +176,9 @@ export function RetentionDashboard({
       </section>
 
       <Card className="rounded-2xl border border-border bg-card shadow-none">
-        <CardHeader className="p-5 pb-0">
+        <CardHeader className="flex flex-row items-center justify-between p-5 pb-4">
           <CardTitle className="text-base font-semibold">续订阶段曲线</CardTitle>
-        </CardHeader>
-
-        {/* toolbar moved inside chart card below */}
-        <CardContent className="p-5 pt-4">
-          <div className="rounded-2xl border border-border bg-background p-5">
-            {/* 工具栏 */}
-            <div className="mb-3 flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <div className="flex flex-wrap items-center gap-1">
               {dashboardData.periodOptions.map((option) => (
                 <button
@@ -196,10 +190,10 @@ export function RetentionDashboard({
                     pushFilter(option.value, subscriptionCycle, displayMode, includeTrial);
                   }}
                   className={cn(
-                    "h-10 rounded-xl px-3 text-sm transition-colors",
+                    "h-10 rounded-xl border px-3 text-sm transition-colors",
                     range === option.value
-                      ? "bg-foreground text-background"
-                      : "border border-border bg-background hover:bg-muted"
+                      ? "border-border bg-foreground text-background"
+                      : "border-border bg-background hover:bg-muted",
                   )}
                 >
                   {option.label}
@@ -214,7 +208,7 @@ export function RetentionDashboard({
                 pushFilter(range, value, displayMode, includeTrial);
               }}
             >
-              <SelectTrigger className="h-10 w-[132px] rounded-xl border-border bg-background text-sm">
+              <SelectTrigger className="h-10 w-[132px] rounded-xl border border-border bg-background text-sm">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -241,10 +235,10 @@ export function RetentionDashboard({
                     pushFilter(range, subscriptionCycle, next, includeTrial);
                   }}
                   className={cn(
-                    "rounded-xl px-3 py-2 text-sm transition-colors",
+                    "rounded-xl border px-3 py-2 text-sm transition-colors",
                     displayMode === option.value
-                      ? "bg-foreground text-background"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "border-border bg-foreground text-background"
+                      : "border-border bg-background text-muted-foreground hover:text-foreground",
                   )}
                 >
                   {option.label}
@@ -254,8 +248,8 @@ export function RetentionDashboard({
 
             <Button
               type="button"
-              variant="ghost"
-              className="h-10 rounded-xl px-4 text-sm"
+              variant="outline"
+              className="h-10 rounded-xl border border-border bg-background px-4 text-sm"
               onClick={() => {
                 const next = displayMode === "both" ? "relative" : "both";
                 setDisplayMode(next);
@@ -265,7 +259,7 @@ export function RetentionDashboard({
               同时显示
             </Button>
 
-            <label className="flex h-10 items-center gap-2 px-1 text-sm text-muted-foreground">
+            <label className="flex h-10 items-center gap-2 rounded-xl border border-border bg-background px-3 text-sm text-muted-foreground">
               <Switch
                 checked={includeTrial}
                 onCheckedChange={(checked) => {
@@ -278,15 +272,17 @@ export function RetentionDashboard({
 
             <Button
               variant="outline"
-              className="h-10 rounded-xl border-border px-4 text-sm"
+              className="h-10 rounded-xl border border-border bg-background px-4 text-sm"
               onClick={() => onExport?.()}
             >
               <Download className="size-4" />
               导出 CSV
             </Button>
           </div>
+        </CardHeader>
 
-            {/* Tab 行 */}
+        <CardContent className="p-5 pt-0">
+          <div className="rounded-2xl border border-border bg-background p-5">
             <div className="mb-3 flex flex-wrap items-center gap-6">
               {dashboardData.viewTabs.map((tab) => (
                 <button
@@ -294,10 +290,10 @@ export function RetentionDashboard({
                   type="button"
                   onClick={() => setActiveTab(tab.value)}
                   className={cn(
-                    "pb-1 text-sm transition-colors",
+                    "border-b pb-1 text-sm transition-colors",
                     activeTab === tab.value
-                      ? "font-medium text-foreground"
-                      : "text-muted-foreground hover:text-foreground"
+                      ? "border-foreground font-medium text-foreground"
+                      : "border-transparent text-muted-foreground hover:text-foreground"
                   )}
                 >
                   {tab.label}
@@ -355,75 +351,75 @@ export function RetentionDashboard({
                 </div>
               ))}
             </div>
-
-            <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-5">
-              {dashboardData.stageCards.map((stage) => (
-                <Card key={stage.stage} className="rounded-xl border border-border bg-card shadow-none">
-                  <CardContent className="space-y-3 p-5">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="text-sm font-medium">{stage.stage}</div>
-                      <div className="text-sm font-medium text-foreground">
-                        {formatPercent(stage.retention)}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-muted-foreground">活跃用户</div>
-                      <div className="mt-1 text-3xl font-semibold tracking-tight">
-                        {formatUsers(stage.activeUsers)}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-muted-foreground">阶段收入</div>
-                      <div className="mt-1 text-xl font-semibold">{stage.revenue}</div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
           </div>
+        </CardContent>
+      </Card>
 
-          <Card className="rounded-2xl border border-border bg-card shadow-none">
-            <CardHeader className="p-5 pb-3">
-              <CardTitle className="text-base font-semibold">分段数据表</CardTitle>
-            </CardHeader>
-            <CardContent className="p-5 pt-0">
-              <Table>
-                <TableHeader>
-                  <TableRow className="hover:bg-transparent">
-                    <TableHead className="w-[160px]">分组</TableHead>
-                    {dashboardData.segmentColumns.map((column) => (
-                      <TableHead key={column} className="text-center">
-                        {column}
-                      </TableHead>
-                    ))}
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {dashboardData.segmentRows.map((row, rowIndex) => (
-                    <TableRow key={row.group} className="hover:bg-muted/30">
-                      <TableCell className="font-medium">
-                        <div className="flex items-center gap-2">
-                          <span
-                            className="size-2 rounded-full"
-                            style={{
-                              backgroundColor:
-                                rowIndex === 0 ? "hsl(var(--foreground))" : "hsl(var(--muted-foreground))",
-                            }}
-                          />
-                          {row.group}
-                        </div>
-                      </TableCell>
-                      {row.values.map((value, index) => (
-                        <TableCell key={`${row.group}-${index}`} className="text-center font-medium">
-                          {formatPercent(value)}
-                        </TableCell>
-                      ))}
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+      <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+        {dashboardData.stageCards.map((stage) => (
+          <Card key={stage.stage} className="rounded-xl border border-border bg-card shadow-none">
+            <CardContent className="space-y-3 p-5">
+              <div className="flex items-start justify-between gap-3">
+                <div className="text-sm font-medium">{stage.stage}</div>
+                <div className="text-sm font-medium text-foreground">
+                  {formatPercent(stage.retention)}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground">活跃用户</div>
+                <div className="mt-1 text-3xl font-semibold tracking-tight">
+                  {formatUsers(stage.activeUsers)}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground">阶段收入</div>
+                <div className="mt-1 text-xl font-semibold">{stage.revenue}</div>
+              </div>
             </CardContent>
           </Card>
+        ))}
+      </section>
+
+      <Card className="rounded-2xl border border-border bg-card shadow-none">
+        <CardHeader className="p-5 pb-3">
+          <CardTitle className="text-base font-semibold">分段数据表</CardTitle>
+        </CardHeader>
+        <CardContent className="p-5 pt-0">
+          <Table>
+            <TableHeader>
+              <TableRow className="hover:bg-transparent">
+                <TableHead className="w-[160px]">分组</TableHead>
+                {dashboardData.segmentColumns.map((column) => (
+                  <TableHead key={column} className="text-center">
+                    {column}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {dashboardData.segmentRows.map((row, rowIndex) => (
+                <TableRow key={row.group} className="hover:bg-muted/30">
+                  <TableCell className="font-medium">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className="size-2 rounded-full"
+                        style={{
+                          backgroundColor:
+                            rowIndex === 0 ? "hsl(var(--foreground))" : "hsl(var(--muted-foreground))",
+                        }}
+                      />
+                      {row.group}
+                    </div>
+                  </TableCell>
+                  {row.values.map((value, index) => (
+                    <TableCell key={`${row.group}-${index}`} className="text-center font-medium">
+                      {formatPercent(value)}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
     </DashboardShell>
