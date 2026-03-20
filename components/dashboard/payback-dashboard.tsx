@@ -30,7 +30,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   chartAxisColor,
@@ -169,30 +168,31 @@ export function PaybackDashboard({
           <div className="rounded-2xl border border-border bg-background p-5">
             <div className="mb-4 flex items-start justify-between gap-4">
               <div className="text-sm text-muted-foreground">{dashboardData.curveLegendLabel}</div>
-              <Tabs
-                value={paybackView}
-                onValueChange={(value) => {
-                  const next = value as PaybackView;
-                  setPaybackView(next);
-                  onPeriodChange?.(next);
-                  pushFilterChange(next, matrixMetric, matrixGranularity, matrixDisplay, horizon);
-                }}
-              >
-                <TabsList className="h-10 rounded-none border-b border-border bg-transparent p-0">
-                  <TabsTrigger
-                    value="renewal"
-                    className="h-10 rounded-none border-b-2 border-transparent bg-transparent px-4 text-sm font-medium text-muted-foreground data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground"
+              <div className="flex items-center rounded-xl border border-border bg-background p-1">
+                {[
+                  { value: "renewal", label: "按续订" },
+                  { value: "daily", label: "按天" },
+                ].map((option) => (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => {
+                      const next = option.value as PaybackView;
+                      setPaybackView(next);
+                      onPeriodChange?.(next);
+                      pushFilterChange(next, matrixMetric, matrixGranularity, matrixDisplay, horizon);
+                    }}
+                    className={cn(
+                      "rounded-lg px-3 py-1.5 text-sm transition-colors",
+                      paybackView === option.value
+                        ? "bg-foreground text-background"
+                        : "text-muted-foreground hover:text-foreground",
+                    )}
                   >
-                    按续订
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="daily"
-                    className="h-10 rounded-none border-b-2 border-transparent bg-transparent px-4 text-sm font-medium text-muted-foreground data-[state=active]:border-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground"
-                  >
-                    按天
-                  </TabsTrigger>
-                </TabsList>
-              </Tabs>
+                    {option.label}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="h-[320px]">

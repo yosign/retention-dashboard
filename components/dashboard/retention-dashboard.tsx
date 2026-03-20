@@ -235,10 +235,10 @@ export function RetentionDashboard({
                     pushFilter(range, subscriptionCycle, next, includeTrial);
                   }}
                   className={cn(
-                    "rounded-xl border px-3 py-2 text-sm transition-colors",
+                    "rounded-lg px-3 py-1.5 text-sm transition-colors",
                     displayMode === option.value
-                      ? "border-border bg-foreground text-background"
-                      : "border-border bg-background text-muted-foreground hover:text-foreground",
+                      ? "bg-foreground text-background"
+                      : "text-muted-foreground hover:text-foreground",
                   )}
                 >
                   {option.label}
